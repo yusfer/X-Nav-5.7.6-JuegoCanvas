@@ -65,23 +65,32 @@ var reset = function () {
 
 // Update game objects
 var update = function (modifier) {
+	
+		// CONDICIONES PARA QUE EL HÉROE NO SE SALGA DEL CANVAS
+		
 	if (38 in keysDown) { // Player holding up
-	//similar a if(hero.speed*modifier > tamaño canvas no actualizo)
-		hero.y -= hero.speed * modifier;
-		console.log(hero.y)
-			/*	if(!(hero.y -= hero.speed * modifier)>tamaño){
-			
-		}*/
-
+		console.log(hero.x)
+		if(!((hero.y-(hero.speed*modifier))<0)){
+			hero.y -= hero.speed * modifier;
+		}
 	}
 	if (40 in keysDown) { // Player holding down
-		hero.y += hero.speed * modifier;
+		if(((hero.y-(hero.speed*modifier))<390)){
+			hero.y += hero.speed * modifier;
+		}
+		
 	}
 	if (37 in keysDown) { // Player holding left
-		hero.x -= hero.speed * modifier;
+		
+		if(!((hero.x-(hero.speed*modifier))<3)){
+			hero.x -= hero.speed * modifier;
+		}
+		
 	}
 	if (39 in keysDown) { // Player holding right
-		hero.x += hero.speed * modifier;
+		if(((hero.x-(hero.speed*modifier))<455)){
+			hero.x += hero.speed * modifier;
+		}	
 	}
 
 	// Are they touching?
@@ -95,7 +104,7 @@ var update = function (modifier) {
 		reset();
 	}
 	
-	//ver si toco piedra o malo
+	//ver si toco piedra o malo (RECORRERME ARRAY ENEMYS)
 };
 
 // Draw everything

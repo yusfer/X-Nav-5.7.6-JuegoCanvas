@@ -33,7 +33,7 @@ princessImage.onload = function () {
 	princessReady = true;
 };
 princessImage.src = "images/princess.png";
-
+//METER IMÁGENES PIEDRAS Y MALOS
 // Game objects
 var hero = {
 	speed: 256 // movement in pixels per second
@@ -58,14 +58,21 @@ var reset = function () {
 	hero.y = canvas.height / 2;
 
 	// Throw the princess somewhere on the screen randomly
-	princess.x = 32 + (Math.random() * (canvas.width - 64));
-	princess.y = 32 + (Math.random() * (canvas.height - 64));
+	princess.x = 32 + (Math.random() * ((canvas.width-32) - 64));	//resto 32 (tamaño árboles) para que princesa no esté subida en una higuera
+	princess.y = 32 + (Math.random() * ((canvas.height-32) - 64));
+	// similar a esto para poner las piedras
 };
 
 // Update game objects
 var update = function (modifier) {
 	if (38 in keysDown) { // Player holding up
+	//similar a if(hero.speed*modifier > tamaño canvas no actualizo)
 		hero.y -= hero.speed * modifier;
+		console.log(hero.y)
+			/*	if(!(hero.y -= hero.speed * modifier)>tamaño){
+			
+		}*/
+
 	}
 	if (40 in keysDown) { // Player holding down
 		hero.y += hero.speed * modifier;
@@ -87,6 +94,8 @@ var update = function (modifier) {
 		++princessesCaught;
 		reset();
 	}
+	
+	//ver si toco piedra o malo
 };
 
 // Draw everything

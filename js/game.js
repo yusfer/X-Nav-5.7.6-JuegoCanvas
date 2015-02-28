@@ -3,7 +3,7 @@
 // Slight modifications by Gregorio Robles <grex@gsyc.urjc.es>
 // to meet the criteria of a canvas class for DAT @ Univ. Rey Juan Carlos
 
-auxNumPiedras = 7;
+auxNumPiedras = 2;
 
 // Create the canvas
 var canvas = document.createElement("canvas");
@@ -45,6 +45,13 @@ stoneImage.onload = function () {
 };
 stoneImage.src = "images/stone.png";
 
+var monsterReady = false;
+var monsterImage = new Image();
+monsterImage.onload = function () {
+	monsterReady = true;
+};
+monsterImage.src = "images/monster.png";
+
 
 
 // Game objects
@@ -54,7 +61,11 @@ var hero = {
 var princess = {};
 
 stone = function(){
-	console.log("creo una piedra")
+		this.image=stoneImage;
+	};
+monster = function(vel){
+		this.image = monsterImage;
+		this.speed = vel;
 	};
 
 var princessesCaught = 0;
@@ -67,6 +78,29 @@ generoEnemys = function(num){
 	for(i=0;i<num;i++){
 		enemys[i]= new stone();
 	}	
+	for(i=num;i<(num*2);i++){
+		enemys[i]= new monster(50);
+	}	
+}
+
+colocoEnemigo = function(enem){
+	console.log("paso por coloco enemigo")
+	var posx = 32 + (Math.random() * ((canvas.width-32) - 64));	
+	var posy = 32 + (Math.random() * ((canvas.height-32) - 64));
+	
+	if (		//está cerca de princesa
+		(posx <= (princess.x + 32)
+		&& princess.x <= (posx + 32)
+		&& posy <= (princess.y + 32)
+		&& princess.y <= (posy + 32))||
+		(posx <= (hero.x + 32)
+		&& hero.x <= (posx + 32)
+		&& posy <= (hero.y + 32)
+		&& hero.y <= (posy + 32))
+	){colocoEnemigo(enem)}else{
+			enem.x = posx;
+			enem.y = posy;
+		}
 }
 
 // Handle keyboard controls
@@ -96,8 +130,8 @@ var reset = function () {
 	
 	for(i=0;i<enemys.length;i++){
 		
-		enemys[i].x = 32 + (Math.random() * ((canvas.width-32) - 64));	
-		enemys[i].y = 32 + (Math.random() * ((canvas.height-32) - 64));
+		colocoEnemigo(enemys[i]);
+		
 	}
 	
 };
@@ -105,10 +139,10 @@ var reset = function () {
 // Update game objects
 var update = function (modifier) {
 	
-		// CONDICIONES PARA QUE EL HÉROE NO SE SALGA DEL CANVAS
 		
+	///////////////////    MOVIMIENTO HÉROE    //////////////////////////	
 	if (38 in keysDown) { // Player holding up
-		if(!((hero.y-(hero.speed*modifier))<0)){
+		if(!((hero.y-(hero.speed*modifier))<0)){// IF --> CONDICIONES PARA QUE EL HÉROE NO SE SALGA DEL CANVAS
 			hero.y -= hero.speed * modifier;
 		}
 	}
@@ -130,7 +164,34 @@ var update = function (modifier) {
 			hero.x += hero.speed * modifier;
 		}	
 	}
-
+	/////////////////////////////////////////////////////////////////////
+	
+	/////////////////    MOVIMIENTO MONSTRUOS    ////////////////////////
+	
+	
+	for(i=(enemys.length/2);i<enemys.length;i++){		//for se recorre todos los monstruos
+	
+		if(hero.x>enemys[i].x){
+			enemys[i].x += enemys[i].speed * modifier;
+		}
+		
+		if(hero.x<enemys[i].x){
+			enemys[i].x -= enemys[i].speed * modifier;
+		}
+		
+		if(hero.y>enemys[i].y){
+			enemys[i].y += enemys[i].speed * modifier;
+		}
+		
+		if(hero.y<enemys[i].y){
+			enemys[i].y -= enemys[i].speed * modifier;
+		}
+		
+	}
+	
+	
+	
+	/////////////////////////////////////////////////////////////////////	
 	// Are they touching?
 	if (
 		hero.x <= (princess.x + 16)
@@ -142,7 +203,7 @@ var update = function (modifier) {
 		reset();
 	}
 	// veo si se toca con array enemys
-	for(i=0;i<auxNumPiedras;i++){
+	for(i=0;i<enemys.length;i++){
 		
 		if (
 		hero.x <= (enemys[i].x + 16)
@@ -155,7 +216,7 @@ var update = function (modifier) {
 	}
 		
 	}
-	//ver si toco piedra o malo (RECORRERME ARRAY ENEMYS)
+	
 };
 
 // Draw everything
@@ -172,9 +233,9 @@ var render = function () {
 		ctx.drawImage(princessImage, princess.x, princess.y);
 	}
 	// varias cosas, meter en array
-	if (stoneReady) {
-		for(i=0;i<auxNumPiedras;i++){
-			ctx.drawImage(stoneImage, enemys[i].x, enemys[i].y);
+	if (stoneReady&&monsterReady) {
+		for(i=0;i<enemys.length;i++){
+			ctx.drawImage(enemys[i].image, enemys[i].x, enemys[i].y);
 		}
 		
 	}

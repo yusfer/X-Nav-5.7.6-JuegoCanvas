@@ -3,7 +3,6 @@
 // Slight modifications by Gregorio Robles <grex@gsyc.urjc.es>
 // to meet the criteria of a canvas class for DAT @ Univ. Rey Juan Carlos
 
-auxNumPiedras = 2;
 
 // Create the canvas
 var canvas = document.createElement("canvas");
@@ -69,6 +68,7 @@ monster = function(vel){
 	};
 
 var princessesCaught = 0;
+var level = 1;
 //array inicial enemys vacío
 var enemys = [];
 
@@ -79,7 +79,7 @@ generoEnemys = function(num){
 		enemys[i]= new stone();
 	}	
 	for(i=num;i<(num*2);i++){
-		enemys[i]= new monster(50);
+		enemys[i]= new monster(num*15);
 	}	
 }
 
@@ -116,10 +116,9 @@ addEventListener("keyup", function (e) {
 
 // Reset the game when the player catches a princess
 var reset = function () {
+	
 	//en cada reset genero nuevos enemigos
-	console.log("llamo a reset")
-	generoEnemys(auxNumPiedras);
-	console.log("length enemys: " + enemys.length)
+	generoEnemys(level);
 	hero.x = canvas.width / 2;
 	hero.y = canvas.height / 2;
 
@@ -189,9 +188,8 @@ var update = function (modifier) {
 		
 	}
 	
-	
-	
-	/////////////////////////////////////////////////////////////////////	
+	/////////////////////////////////////////////////////////////////////
+		
 	// Are they touching?
 	if (
 		hero.x <= (princess.x + 16)
@@ -200,6 +198,10 @@ var update = function (modifier) {
 		&& princess.y <= (hero.y + 32)
 	) {
 		++princessesCaught;
+		// cojo 10, más un nivel, más malos
+		if(princessesCaught%10==0){	
+			level++;
+		}
 		reset();
 	}
 	// veo si se toca con array enemys
@@ -212,6 +214,8 @@ var update = function (modifier) {
 		&& enemys[i].y <= (hero.y + 32)
 	) {
 		princessesCaught=0;
+		level = 1;
+		enemys=[]
 		reset();
 	}
 		

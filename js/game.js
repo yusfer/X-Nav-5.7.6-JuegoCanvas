@@ -25,7 +25,7 @@ var heroImage = new Image();
 heroImage.onload = function () {
 	heroReady = true;
 };
-heroImage.src = "images/hero2.png";
+heroImage.src = "images/hero3.png";
 
 // princess image
 var princessReady = false;
@@ -33,7 +33,8 @@ var princessImage = new Image();
 princessImage.onload = function () {
 	princessReady = true;
 };
-princessImage.src = "images/princess.png";
+princessImage.src = "images/peach.png";
+//princessImage.src = "images/princess.png";
 //METER IMÁGENES PIEDRAS Y MALOS
 
 //stone image

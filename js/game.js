@@ -3,6 +3,8 @@
 // Slight modifications by Gregorio Robles <grex@gsyc.urjc.es>
 // to meet the criteria of a canvas class for DAT @ Univ. Rey Juan Carlos
 
+auxNumPiedras = 7;
+
 // Create the canvas
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
@@ -34,12 +36,38 @@ princessImage.onload = function () {
 };
 princessImage.src = "images/princess.png";
 //METER IMÁGENES PIEDRAS Y MALOS
+
+//stone image
+var stoneReady = false;
+var stoneImage = new Image();
+stoneImage.onload = function () {
+	stoneReady = true;
+};
+stoneImage.src = "images/stone.png";
+
+
+
 // Game objects
 var hero = {
 	speed: 256 // movement in pixels per second
 };
 var princess = {};
+
+stone = function(){
+	console.log("creo una piedra")
+	};
+
 var princessesCaught = 0;
+//array inicial enemys vacío
+var enemys = [];
+
+//función para rellenar enemigos que llamo en reset
+generoEnemys = function(num){
+	
+	for(i=0;i<num;i++){
+		enemys[i]= new stone();
+	}	
+}
 
 // Handle keyboard controls
 var keysDown = {};
@@ -54,6 +82,10 @@ addEventListener("keyup", function (e) {
 
 // Reset the game when the player catches a princess
 var reset = function () {
+	//en cada reset genero nuevos enemigos
+	console.log("llamo a reset")
+	generoEnemys(auxNumPiedras);
+	console.log("length enemys: " + enemys.length)
 	hero.x = canvas.width / 2;
 	hero.y = canvas.height / 2;
 
@@ -61,6 +93,13 @@ var reset = function () {
 	princess.x = 32 + (Math.random() * ((canvas.width-32) - 64));	//resto 32 (tamaño árboles) para que princesa no esté subida en una higuera
 	princess.y = 32 + (Math.random() * ((canvas.height-32) - 64));
 	// similar a esto para poner las piedras
+	
+	for(i=0;i<enemys.length;i++){
+		
+		enemys[i].x = 32 + (Math.random() * ((canvas.width-32) - 64));	
+		enemys[i].y = 32 + (Math.random() * ((canvas.height-32) - 64));
+	}
+	
 };
 
 // Update game objects
@@ -69,7 +108,6 @@ var update = function (modifier) {
 		// CONDICIONES PARA QUE EL HÉROE NO SE SALGA DEL CANVAS
 		
 	if (38 in keysDown) { // Player holding up
-		console.log(hero.x)
 		if(!((hero.y-(hero.speed*modifier))<0)){
 			hero.y -= hero.speed * modifier;
 		}
@@ -103,7 +141,20 @@ var update = function (modifier) {
 		++princessesCaught;
 		reset();
 	}
-	
+	// veo si se toca con array enemys
+	for(i=0;i<auxNumPiedras;i++){
+		
+		if (
+		hero.x <= (enemys[i].x + 16)
+		&& enemys[i].x <= (hero.x + 16)
+		&& hero.y <= (enemys[i].y + 16)
+		&& enemys[i].y <= (hero.y + 32)
+	) {
+		princessesCaught=0;
+		reset();
+	}
+		
+	}
 	//ver si toco piedra o malo (RECORRERME ARRAY ENEMYS)
 };
 
@@ -119,6 +170,13 @@ var render = function () {
 
 	if (princessReady) {
 		ctx.drawImage(princessImage, princess.x, princess.y);
+	}
+	// varias cosas, meter en array
+	if (stoneReady) {
+		for(i=0;i<auxNumPiedras;i++){
+			ctx.drawImage(stoneImage, enemys[i].x, enemys[i].y);
+		}
+		
 	}
 
 	// Score

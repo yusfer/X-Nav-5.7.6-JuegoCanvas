@@ -251,6 +251,7 @@ var render = function () {
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
 	ctx.fillText("Princesses caught: " + princessesCaught, 32, 32);
+	ctx.fillText("Level: " + level, 380, 32);
 };
 
 // The main game loop

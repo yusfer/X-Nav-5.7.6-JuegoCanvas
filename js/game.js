@@ -68,8 +68,15 @@ monster = function(vel){
 		this.speed = vel;
 	};
 
-var princessesCaught = 0;
-var level = 1;
+var princessesCaught = localStorage.getItem("cogidas");
+function getlevel(){
+		if(localStorage.getItem("level")!=0){
+			return localStorage.getItem("level")
+		}else{
+			return 1
+		}
+	}
+var level = getlevel()
 //array inicial enemys vacío
 var enemys = [];
 
@@ -199,9 +206,11 @@ var update = function (modifier) {
 		&& princess.y <= (hero.y + 32)
 	) {
 		++princessesCaught;
+		localStorage.setItem("cogidas",princessesCaught)
 		// cojo 10, más un nivel, más malos
 		if(princessesCaught%10==0){	
 			level++;
+			localStorage.setItem("level",level)
 		}
 		reset();
 	}
@@ -215,7 +224,9 @@ var update = function (modifier) {
 		&& enemys[i].y <= (hero.y + 32)
 	) {
 		princessesCaught=0;
+		localStorage.setItem("cogidas",princessesCaught)
 		level = 1;
+		localStorage.setItem("level",level)
 		enemys=[]
 		reset();
 	}

@@ -67,10 +67,20 @@ monster = function(vel){
 		this.image = monsterImage;
 		this.speed = vel;
 	};
+function getprincess(){
+		if(localStorage.cogidas){
+			return localStorage.getItem("cogidas")
+		}else{
+			return 0
+		}
+	}
+var princessesCaught = getprincess()
 
-var princessesCaught = localStorage.getItem("cogidas");
+
+
 function getlevel(){
-		if(localStorage.getItem("level")!=0){
+	console.log(localStorage.getItem("level"))
+		if(localStorage.level){
 			return localStorage.getItem("level")
 		}else{
 			return 1
